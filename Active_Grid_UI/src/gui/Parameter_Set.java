@@ -13,44 +13,30 @@ public class Parameter_Set {
     Hashtable<Integer, Button> button_set= new Hashtable<>();
     Color original_color= Main.original_color;
     Color button_color;
-    boolean lock= false;
+    Color base_color;
     int set_number;
-    // Hashtable<Integer, Button> panel_buttons= Main.panel_buttons;
 
     Parameter_Set(int set_number, Color button_color) {
         this.button_color= button_color;
         this.set_number= set_number;
+        base_color= button_color;
     }
 
-    public void update_colors() {
+    public void update() {
         if (button_set != null) {
             Enumeration<Integer> e= button_set.keys();
             while (e.hasMoreElements()) {
-                button_set.get(e.nextElement()).setBackground(button_color);
+                int iter= e.nextElement();
+                button_set.get(iter).setBackground(button_color);
+                button_set.get(iter).setSet(set_number);
+
             }
-
-            // need to include a color change
-
         }
-
-    }
-
-    public void update_set() {
-        if (button_set != null) {
-            Enumeration<Integer> e= button_set.keys();
-            while (e.hasMoreElements()) {
-                button_set.get(e.nextElement()).setSet(set_number);
-            }
-
-            // need to include a color change
-
-        }
-
     }
 
     public void setColor(Color color) {
         button_color= color;
-        update_colors();
+        update();
     }
 
     public Color getColor() {
@@ -58,23 +44,18 @@ public class Parameter_Set {
     }
 
     public void setMovement(int[][] mov_vector) {
-        // System.out.println("here in " + Integer.toString(set_number) + " the vector is");
-        // System.out.println(mov_vector);
         movement= mov_vector;
-        // System.out.println("for some reason movement is saving to:");
-        // System.out.println(movement);
+
     }
 
     public int[][] getMovement() {
-        // System.out.println("for some reason movement is updated to:");
-        // System.out.println(movement);
         return movement;
     }
 
     public void addButton(int i, Button button) {
         button_set.put(i, button);
-        update_set();
-        update_colors();
+        update();
+
     }
 
     public void removeButton(int i) {
@@ -87,5 +68,19 @@ public class Parameter_Set {
     public Hashtable<Integer, Button> getSet() {
         return button_set;
     }
+
+    public void setNumber(int num) {
+        set_number= num;
+        update();
+    }
+
+    public int getNumber() {
+        return set_number;
+    }
+
+//    public void change_button_set(Hashtable<Integer, Button> new_set) {
+//        button_set= new_set;
+//        update();
+//    }
 
 }

@@ -14,15 +14,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
-
-import javax.swing.JButton;
 
 // look at documentation for JFileChooser
 public class Read_Write {
 
     public static Hashtable<Integer, Button> panel_buttons= Main.panel_buttons;
-    public static Hashtable<Integer, JButton> parameter_set_buttons= Main.parameter_set_buttons;
+    public static Hashtable<Integer, Button> parameter_set_buttons= Main.parameter_set_buttons;
     public static Hashtable<Integer, Color> button_colors= Main.button_colors;
     public static Hashtable<Integer, Parameter_Set> Parameter_Sets= Main.Parameter_Sets;
     public static Counter num_sets= Main.num_sets;
@@ -30,9 +29,6 @@ public class Read_Write {
 
     public static void read_file(File config_file) {
 
-        Main.init_frame.setVisible(false);
-        Main.main_window();
-        Main.main_frame.setVisible(false);
         // initialize variables from file
         FileInputStream stream= null;
 
@@ -62,14 +58,14 @@ public class Read_Write {
         }
 
         int buttons_header= lines.indexOf("Buttons");
-        int end_header= lines.indexOf("End");
+        int end_buttons= lines.indexOf("End Buttons");
+        int end_movements= lines.indexOf("End Movements");
 
-        for (int i= buttons_header + 1; i < end_header; i++ ) {
+        for (int i= buttons_header + 1; i < end_buttons; i++ ) {
 
             String data= lines.get(i);
             int colon= data.indexOf(":");
             int button_key= Integer.parseInt(data.substring(0, colon));
-
             int button_set= Integer.parseInt(data.substring(colon + 1, data.length()));
             panel_buttons.get(button_key).setSet(button_set);
 
@@ -134,6 +130,56 @@ public class Read_Write {
             });
         }
 
+        for (int i= end_buttons + 1; i < end_movements; i++ ) {
+
+            String data= lines.get(i);
+            int space= data.indexOf(" ");
+
+            if (space == -1) {
+                continue;
+            }
+
+            String data_ref= data.substring(0, space);
+            int set_ref= Integer.parseInt(data.substring(space + 1, data.length()));
+            String time_data= "";
+            String move_data= "";
+            String time_data_extra= "";
+            String move_data_extra= "";
+            int time_comma_idx= 0;
+            int move_comma_idx= 0;
+            int data_count= 0;
+
+            if (data_ref.equals("Movements")) {
+                time_data= lines.get(i + 1);
+                move_data= lines.get(i + 2);
+
+                data_count= (int) time_data.chars().filter(ch -> ch == ',').count();
+
+                int[][] load_movements= new int[data_count][2];
+
+                for (int j= 0; j < data_count; j++ ) {
+
+                    time_comma_idx= time_data.indexOf(',');
+                    move_comma_idx= move_data.indexOf(",");
+
+                    int time_splice= Integer.parseInt(time_data.substring(0, time_comma_idx));
+                    int move_splice= Integer.parseInt(move_data.substring(0, move_comma_idx));
+                    load_movements[j][0]= time_splice;
+                    load_movements[j][1]= move_splice;
+
+                    time_data_extra= time_data.substring(time_comma_idx + 1, time_data.length());
+                    move_data_extra= move_data.substring(move_comma_idx + 1, move_data.length());
+                    time_data= time_data_extra;
+                    move_data= move_data_extra;
+
+                }
+
+                Parameter_Sets.get(set_ref).setMovement(load_movements);
+
+            }
+
+        }
+
         Active_Set.update();
         Main.main_frame.repaint();
         Main.main_frame.setVisible(true);
@@ -149,7 +195,35 @@ public class Read_Write {
             data_to_save.add(Integer.toString(j) + ":" + Integer.toString(button_set));
         }
 
-        data_to_save.add("End");
+        data_to_save.add("End Buttons");
+
+        int[][] load_movements;
+        String times= "";
+        String moves= "";
+
+        Enumeration<Integer> f= Parameter_Sets.keys();
+
+        while (f.hasMoreElements()) {
+            int set= f.nextElement();
+            data_to_save.add("Movements " + Integer.toString(set));
+            load_movements= Parameter_Sets.get(set).getMovement();
+            for (int i= 0; i < load_movements.length; i++ ) {
+                times+= Integer.toString(load_movements[i][0]);
+                times+= ",";
+                moves+= Integer.toString(load_movements[i][1]);
+                moves+= ",";
+
+            }
+
+            data_to_save.add(times);
+            data_to_save.add(moves);
+
+            times= "";
+            moves= "";
+
+        }
+
+        data_to_save.add("End Movements");
 
         FileOutputStream stream= null;
 

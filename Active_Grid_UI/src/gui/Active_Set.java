@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 // handles all updates required when the active set number changes
@@ -12,7 +11,7 @@ public class Active_Set {
 
     public static int active_set= -1;
     public static Hashtable<Integer, Parameter_Set> Parameter_Sets= Main.Parameter_Sets;
-    public static Hashtable<Integer, JButton> parameter_set_buttons= Main.parameter_set_buttons;
+    public static Hashtable<Integer, Button> parameter_set_buttons= Main.parameter_set_buttons;
     public static Hashtable<Integer, Color> button_colors= Main.button_colors;
     public static DefaultTableModel default_table= Main.default_table;
 
@@ -31,13 +30,12 @@ public class Active_Set {
 
     public static void update() {
         // update all button colors according to their set
-        Main.update_click_color(); // I think this can be removed
         if (Parameter_Sets != null) {
             Enumeration<Integer> e= Parameter_Sets.keys();
             while (e.hasMoreElements()) {
                 int key_number= e.nextElement();
-                // System.out.print(key_number);
-                Color start_color= button_colors.get(key_number);
+
+                Color start_color= Parameter_Sets.get(key_number).base_color;
                 if (key_number != active_set) {
                     float hsbVals[]= Color.RGBtoHSB(start_color.getRed(),
                         start_color.getGreen(), start_color.getBlue(), null);
@@ -52,8 +50,6 @@ public class Active_Set {
                 }
 
             }
-
-            // need to include a color change
 
         }
     }
@@ -95,15 +91,13 @@ public class Active_Set {
 
         if (active_set != -1) {
             int[][] load_movements= Parameter_Sets.get(active_set).getMovement();
-            // System.out.println(Parameter_Sets.get(active_set));
-            // System.out.println("getMovement was called for " + Integer.toString(active_set));
 
             if (load_movements != null) {
-                // System.out.println("here");
+
                 int rows= load_movements.length;
                 int cols= default_table.getColumnCount();
                 default_table.setRowCount(rows);
-                // default_table.setDataVector(load_mov_vector, columnNames);
+
                 for (int i= 0; i < cols; i++ ) {
                     for (int j= 0; j < rows; j++ ) {
                         default_table.setValueAt(load_movements[j][i], j, i);

@@ -8,8 +8,12 @@ public class Counter {
         count= 0;
     }
 
-    public void increment() {
+    public void increase() {
         count++ ;
+    }
+
+    public void decrease() {
+        count-- ;
     }
 
     public int getCount() {
