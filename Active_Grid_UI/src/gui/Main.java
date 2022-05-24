@@ -47,6 +47,30 @@ public class Main {
         button_colors.put(6, new Color(51, 255, 255));
         button_colors.put(7, new Color(255, 255, 51));
         button_colors.put(8, new Color(103, 254, 104));
+        button_colors.put(9, new Color(255, 0, 0));
+        button_colors.put(10, new Color(0, 255, 0));
+        button_colors.put(11, new Color(51, 153, 255));
+        button_colors.put(12, new Color(255, 128, 0));
+        button_colors.put(13, new Color(204, 0, 204));
+        button_colors.put(14, new Color(51, 255, 255));
+        button_colors.put(15, new Color(255, 255, 51));
+        button_colors.put(16, new Color(103, 254, 104));
+        button_colors.put(17, new Color(255, 0, 0));
+        button_colors.put(18, new Color(0, 255, 0));
+        button_colors.put(19, new Color(51, 153, 255));
+        button_colors.put(20, new Color(255, 128, 0));
+        button_colors.put(21, new Color(204, 0, 204));
+        button_colors.put(22, new Color(51, 255, 255));
+        button_colors.put(23, new Color(255, 255, 51));
+        button_colors.put(24, new Color(103, 254, 104));
+        button_colors.put(25, new Color(255, 0, 0));
+        button_colors.put(26, new Color(0, 255, 0));
+        button_colors.put(27, new Color(51, 153, 255));
+        button_colors.put(28, new Color(255, 128, 0));
+        button_colors.put(29, new Color(204, 0, 204));
+        button_colors.put(30, new Color(51, 255, 255));
+        button_colors.put(31, new Color(255, 255, 51));
+        button_colors.put(32, new Color(103, 254, 104));
 
         // set look and feel of the window based on the OS
         try {
@@ -643,24 +667,14 @@ public class Main {
 
                 if (!Command_center.getState()) {
 
-                    run.setText("TERMINATE");
-                    run.setBackground(new Color(255, 0, 0));
-                    main_frame.repaint();
                     Active_Set.save_movements();
 
                     Command_center.create_command_schedule();
                     Command_center.send_commands();
 
-//                    run.setText("RUN");
-//                    run.setBackground(new Color(0, 153, 0));
-//                    main_frame.repaint();
-
                 } else {
                     System.out.println("not sending commands");
                     Command_center.setState(false);
-                    run.setText("RUN");
-                    run.setBackground(new Color(0, 153, 0));
-                    main_frame.repaint();
 
                 }
 

@@ -158,8 +158,8 @@ public class Calibrate {
         try {
             // out.write(set_servo_mode_ch1);
 
-            String set_mode= "AAA055040164";
-            for (int i= 0; i < 64; i++ ) {
+            String set_mode= "AAA055040184";
+            for (int i= 0; i < 84; i++ ) {
                 set_mode= set_mode + "19";
 
             }
@@ -259,7 +259,9 @@ public class Calibrate {
 
     public static byte[] set_speed(int req_speed, int channel) {
 
-        String channel_hex= Integer.toHexString(channel);
+        int real_channel= Command_center.board_correction(channel);
+
+        String channel_hex= Integer.toHexString(real_channel);
         channel_hex= channel_hex.toUpperCase();
         if (channel_hex.length() % 2 != 0) {
             channel_hex= '0' + channel_hex;
@@ -282,12 +284,14 @@ public class Calibrate {
 
     public static byte[] open_panel(float angle, int channel) {
 
+        int real_channel= Command_center.board_correction(channel);
+
         float temp= angle;
         // float start_pot= (angle + 90) / 180 * 1260 + 865;
         // int start= (int) start_pot;
         System.out.println("openning");
         System.out.println(angle);
-        String channel_hex= Integer.toHexString(channel);
+        String channel_hex= Integer.toHexString(real_channel);
         channel_hex= channel_hex.toUpperCase();
         if (channel_hex.length() % 2 != 0) {
             channel_hex= '0' + channel_hex;

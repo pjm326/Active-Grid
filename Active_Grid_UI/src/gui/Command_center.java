@@ -94,8 +94,8 @@ public class Command_center {
             return;
         }
 
-        String set_mode= "AAA055040164";
-        for (int i= 0; i < 64; i++ ) {
+        String set_mode= "AAA055040184";
+        for (int i= 0; i < 84; i++ ) {
             set_mode= set_mode + "19";
         }
         byte[] set_mode_command= hexStringToByteArray(set_mode);
@@ -196,8 +196,8 @@ public class Command_center {
 
         serialControl(port);
 
-        String set_mode= "AAA055040164";
-        for (int i= 0; i < 64; i++ ) {
+        String set_mode= "AAA055040184";
+        for (int i= 0; i < 84; i++ ) {
             set_mode= set_mode + "19";
         }
         byte[] set_mode_command= hexStringToByteArray(set_mode);
@@ -230,8 +230,8 @@ public class Command_center {
     public static void closeAll() {
         serialControl(port);
 
-        String set_mode= "AAA055040164";
-        for (int i= 0; i < 64; i++ ) {
+        String set_mode= "AAA055040184";
+        for (int i= 0; i < 84; i++ ) {
             set_mode= set_mode + "19";
         }
         byte[] set_mode_command= hexStringToByteArray(set_mode);
@@ -247,7 +247,7 @@ public class Command_center {
         }
 
         for (int i= 1; i <= 64; i++ ) {
-            byte[] speed_command= set_speed_direct(50, i);
+            byte[] speed_command= set_speed_direct(40, i);
             byte[] pos_command= open_panel_direct(Calibrate.get_cal(i) + 745, i);
             try {
 
@@ -262,6 +262,8 @@ public class Command_center {
     }
 
     public static byte[] set_speed(int row, int[][] movement, int channel) {
+
+        int real_channel= board_correction(channel);
 
         int center= Calibrate.get_cal(channel);
         int min= center - 745;
@@ -279,7 +281,7 @@ public class Command_center {
             req_speed= 255;
         }
 
-        String channel_hex= Integer.toHexString(channel);
+        String channel_hex= Integer.toHexString(real_channel);
         channel_hex= channel_hex.toUpperCase();
         if (channel_hex.length() % 2 != 0) {
             channel_hex= '0' + channel_hex;
@@ -300,7 +302,9 @@ public class Command_center {
 
     public static byte[] set_speed_direct(int req_speed, int channel) {
 
-        String channel_hex= Integer.toHexString(channel);
+        int real_channel= board_correction(channel);
+
+        String channel_hex= Integer.toHexString(real_channel);
         channel_hex= channel_hex.toUpperCase();
         if (channel_hex.length() % 2 != 0) {
             channel_hex= '0' + channel_hex;
@@ -321,12 +325,14 @@ public class Command_center {
 
     public static byte[] open_panel(int row, int[][] movement, int channel) {
 
+        int real_channel= board_correction(channel);
+
         int center= Calibrate.get_cal(channel);
         int min= center - 745;
         float angle= movement[row + 1][1];
         float pot= (angle + 90) / 180 * 1490 + min;
         int loc= (int) pot;
-        String channel_hex= Integer.toHexString(channel);
+        String channel_hex= Integer.toHexString(real_channel);
         channel_hex= channel_hex.toUpperCase();
         if (channel_hex.length() % 2 != 0) {
             channel_hex= '0' + channel_hex;
@@ -350,9 +356,11 @@ public class Command_center {
 
     public static byte[] open_panel_direct(float angle, int channel) {
 
+        int real_channel= board_correction(channel);
+
         float temp= angle;
 
-        String channel_hex= Integer.toHexString(channel);
+        String channel_hex= Integer.toHexString(real_channel);
         channel_hex= channel_hex.toUpperCase();
         if (channel_hex.length() % 2 != 0) {
             channel_hex= '0' + channel_hex;
@@ -398,6 +406,25 @@ public class Command_center {
             curr.getMinute() * 60000 + curr.getSecond() * 1000 + curr.getNano() * Math.pow(10, -6));
 
         return time_ms;
+
+    }
+
+    public static int board_correction(int channel) {
+
+        int real_channel;
+        if (channel == 4) {
+            real_channel= 84;
+        } else if (channel == 3) {
+            real_channel= 83;
+        } else if (channel == 2) {
+            real_channel= 82;
+        } else if (channel == 1) {
+            real_channel= 81;
+        } else {
+            real_channel= channel;
+        }
+
+        return real_channel;
 
     }
 

@@ -128,6 +128,22 @@ public class Read_Write {
                     }
                 }
             });
+
+            if (i % 8 == 0) {
+                System.out.println("here");
+                System.out.println(i);
+
+                Enumeration<Integer> g= parameter_set_buttons.keys();
+                while (g.hasMoreElements()) {
+                    int key= g.nextElement();
+                    int old_x= parameter_set_buttons.get(key).getX();
+                    int old_y= parameter_set_buttons.get(key).getY();
+                    parameter_set_buttons.get(key).setBounds(old_x, old_y - 30, 50, 20);
+                    Main.main_frame.add(parameter_set_buttons.get(key));
+                    Main.main_frame.repaint();
+
+                }
+            }
         }
 
         for (int i= end_buttons + 1; i < end_movements; i++ ) {
@@ -173,7 +189,7 @@ public class Read_Write {
                     move_data= move_data_extra;
 
                 }
-
+                System.out.println(set_ref);
                 Parameter_Sets.get(set_ref).setMovement(load_movements);
 
             }
